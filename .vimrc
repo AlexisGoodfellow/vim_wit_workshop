@@ -17,7 +17,9 @@ set shiftwidth=4
 set mouse=n
 set ttymouse=xterm2
 set updatetime=100
-set foldmethod=indent
+" This enables code folding by indentation, but folding is not covered in this
+" presentation, so it is commented out here
+" set foldmethod=indent
 set incsearch
 set hlsearch
 " <Leader> key is ','
