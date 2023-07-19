@@ -23,28 +23,15 @@ set incsearch
 set hlsearch
 " <Leader> key is ','
 set iskeyword+=\
+" Sane backspacing
+set backspace=indent,eol,start
+autocmd FileType javascript setlocal shiftwidth=4 tabstop=4
 
-augroup PHP
-    autocmd!
-    autocmd FileType php inoremap <Leader>tu <Esc>:call Test("unit")<CR>:execute "Sexe " . g:test_cmd<CR>
-    autocmd FileType php noremap <Leader>tu :call Test("unit")<CR>:execute "Sexe " . g:test_cmd<CR>
-    autocmd FileType php inoremap <Leader>td <Esc>:call Test("db_unit")<CR>:execute "Sexe " . g:test_cmd<CR>
-    autocmd FileType php noremap <Leader>td :call Test("db_unit")<CR>:execute "Sexe " . g:test_cmd<CR>
-    autocmd FileType php inoremap <Leader>ti <Esc>:call Test("integration")<CR>:execute "Sexe " . g:test_cmd<CR>
-    autocmd FileType php noremap <Leader>ti :call Test("integration")<CR>:execute "Sexe " . g:test_cmd<CR>
-    autocmd FileType php inoremap <Leader>tc <Esc>:call Test("codeception")<CR>:execute "Sexe " . g:test_cmd<CR>
-    autocmd FileType php noremap <Leader>tc :call Test("codeception")<CR>:execute "Sexe " . g:test_cmd<CR>
-    " -2 == de-coupled
-    autocmd FileType php inoremap <Leader>t-2 <Esc>:call Test("decoupled")<CR>:execute "Sexe " . g:test_cmd<CR>
-    autocmd FileType php noremap <Leader>t-2 :call Test("decoupled")<CR>:execute "Sexe " . g:test_cmd<CR>
-    autocmd BufWritePost {*.php} echom system("php -l ".expand('%'))
-    autocmd BufWritePost {*.php} execute "Sexe wf format; wf sniff; wf analyze"
-augroup END
 " Ack -> Ag
 if executable('ag')
     let g:ackprg = 'ag -r --vimgrep'
-    let g:searchpath = '~/codebase/php'
 endif
+
 " PHP Find Implementations
 function! PhpImplementations(word)
     exe 'Ack "implements.*' . a:word . ' *($|{)" ' . g:searchpath
@@ -118,23 +105,28 @@ let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#ale#enabled = 1
+" Clear search highlighting
+nmap <Space> :noh<CR>
 " Sensible window navigation
-map <Leader>jj :wincmd j<CR>
-map <Leader>kk :wincmd k<CR>
-map <Leader>hh :wincmd h<CR>
-map <Leader>ll :wincmd l<CR>
+map <Leader>j :wincmd j<CR>
+map <Leader>k :wincmd k<CR>
+map <Leader>h :wincmd h<CR>
+map <Leader>l :wincmd l<CR>
 map - <C-w>-
 map + <C-w>+
 map <Leader>z :!find . -name
-" Disable arrow keys
+" Disable arrow keys in normal mode
 map <up> <nop>
 map <down> <nop>
 map <left> <nop>
 map <right> <nop>
-imap <up> <nop>
-imap <down> <nop>
-imap <left> <nop>
-imap <right> <nop>
+" Map arrow keys to Escape in insert mode
+imap <up> <ESC>
+imap <down> <ESC>
+imap <left> <ESC>
+imap <right> <ESC>
+" Only works in MacOS - Apple Key + Space -> Escape
+imap <D-Space> <Esc>
 " Trim trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
 " Autocomplete
@@ -168,7 +160,6 @@ let g:vdebug_options = {
     \    'debug_window_level' : 0,
     \    'debug_file_level' : 0,
     \    'debug_file' : '',
-    \    'path_maps' : {'/wayfair/data/codebase/php' : '/Users/<REDACTED>/codebase/php'},
     \    'watch_window_style' : 'expanded',
     \    'marker_default' : '⬦',
     \    'marker_closed_tree' : '▸',
@@ -214,13 +205,24 @@ let g:NERDToggleCheckAllLines = 1
 " Set ALE omnifunc
 set omnifunc=ale#completion#OmniFunc
 " Pythonisms
-augroup PYTHON
-    autocmd!
-    autocmd BufWritePost {*.py} execute "Black"
-augroup END
-let g:pymode_python = 'python3'
-let g:black_linelength = 80
-let g:python_highlight_all = 1
-let g:syntastic_python_checkers = ["pydocstyle"]
+" TURNING OFF BLACK FOR <REDACTED>
+" augroup PYTHON
+"     autocmd!
+"     autocmd BufWritePost {*.py} execute "Black"
+" augroup END
+" let g:pymode_python = 'python3'
+" let g:black_linelength = 80
+" let g:python_highlight_all = 1
+" let g:syntastic_python_checkers = ["pydocstyle"]
 " Have syntastic help with yaml
 let g:syntastic_yaml_checkers = ['yamllint']
+" Go things
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
+let g:ale_linters = {
+  \ 'go': ['gopls'],
+  \}
+let g:go_fmt_command = "golines"
+let g:go_fmt_options = {
+  \ 'golines': '-m 128',
+  \}

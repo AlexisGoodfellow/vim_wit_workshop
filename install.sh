@@ -31,3 +31,4 @@ git clone https://github.com/tpope/vim-surround.git
 git clone https://github.com/janko/vim-test.git
 git clone https://github.com/mattn/webapi-vim.git
 git clone https://github.com/ycm-core/YouCompleteMe.git
+git clone https://github.com/fatih/vim-go.git
